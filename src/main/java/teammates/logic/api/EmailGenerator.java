@@ -38,6 +38,8 @@ import teammates.logic.core.StudentsLogic;
  * @see EmailWrapper
  */
 public final class EmailGenerator {
+    // variable for branches
+    static int[] branches = new int[100];
     // status-related strings
     private static final String FEEDBACK_STATUS_SESSION_OPEN = "is still open for submissions";
     private static final String FEEDBACK_STATUS_SESSION_OPENING = "is now open";
@@ -211,14 +213,16 @@ public final class EmailGenerator {
         assert emailType == EmailType.STUDENT_EMAIL_CHANGED
                 || emailType == EmailType.STUDENT_COURSE_LINKS_REGENERATED
                 || emailType == EmailType.INSTRUCTOR_COURSE_LINKS_REGENERATED;
-
+        boolean[] branchesVisited = new boolean[100];
         CourseAttributes course = coursesLogic.getCourse(courseId);
         boolean isInstructor = emailType == EmailType.INSTRUCTOR_COURSE_LINKS_REGENERATED;
         StudentAttributes student = null;
         InstructorAttributes instructor = null;
         if (isInstructor) {
+            branchesVisited[0] = true;
             instructor = instructorsLogic.getInstructorForEmail(courseId, userEmail);
         } else {
+            branchesVisited[1] = true;
             student = studentsLogic.getStudentForEmail(courseId, userEmail);
         }
 
@@ -226,7 +230,9 @@ public final class EmailGenerator {
         List<FeedbackSessionAttributes> fsInCourse = fsLogic.getFeedbackSessionsForCourse(courseId);
 
         for (FeedbackSessionAttributes fsa : fsInCourse) {
+            branchesVisited[2] = true;
             if (fsa.isSentOpenEmail() || fsa.isSentPublishedEmail()) {
+                branchesVisited[3] = true;
                 sessions.add(fsa);
             }
         }
@@ -250,12 +256,14 @@ public final class EmailGenerator {
                 : "";
 
         for (FeedbackSessionAttributes fsa : sessions) {
+            branchesVisited[4] = true;
             String submitUrlHtml = "(Feedback session is not yet opened)";
             String reportUrlHtml = "(Feedback session is not yet published)";
 
             String userKey = isInstructor ? instructor.getKey() : student.getKey();
 
             if (fsa.isOpened() || fsa.isClosed()) {
+                branchesVisited[5] = true;
                 String submitUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_SUBMISSION_PAGE)
                         .withCourseId(course.getId())
                         .withSessionName(fsa.getFeedbackSessionName())
@@ -266,6 +274,7 @@ public final class EmailGenerator {
             }
 
             if (fsa.isPublished()) {
+                branchesVisited[6] = true;
                 String reportUrl = Config.getFrontEndAppUrl(Const.WebPageURIs.SESSION_RESULTS_PAGE)
                         .withCourseId(course.getId())
                         .withSessionName(fsa.getFeedbackSessionName())
@@ -287,6 +296,7 @@ public final class EmailGenerator {
         }
 
         if (linksFragmentValue.length() == 0) {
+            branchesVisited[7] = true;
             linksFragmentValue.append("No links found.");
         }
 
@@ -309,6 +319,12 @@ public final class EmailGenerator {
         email.setContent(emailBody);
         email.setType(emailType);
         email.setSubjectFromType(course.getName(), course.getId());
+        branchesVisited[8] = true;
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if (branchesVisited[i]) {
+                branches[i] += 1;
+            }
+        }
         return email;
     }
 

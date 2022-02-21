@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.testng.annotations.Test;
+import org.junit.AfterClass;
 
 import teammates.common.datatransfer.ErrorLogEntry;
 import teammates.common.datatransfer.attributes.AccountAttributes;
@@ -36,6 +37,14 @@ public class EmailGeneratorTest extends BaseLogicTest {
 
     private final EmailGenerator emailGenerator = EmailGenerator.inst();
 
+    @AfterClass 
+    public void coverage() {
+        System.out.println("WRITING");
+        int[] branches = EmailGenerator.branches;
+        for (int i = 0; i < branches.length; i++) {
+            System.out.println(i + ": " + branches[i]);
+        }
+    }
     @Override
     public void prepareTestData() {
         dataBundle = loadDataBundle("/EmailGeneratorTest.json");
@@ -635,7 +644,6 @@ public class EmailGeneratorTest extends BaseLogicTest {
                 course.getName(), course.getId());
 
         verifyEmail(email, emailAddress, subject, "/instructorCourseRegisterEmail.html");
-
     }
 
     @Test
