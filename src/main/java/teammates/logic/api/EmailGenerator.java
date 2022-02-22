@@ -325,6 +325,13 @@ public final class EmailGenerator {
                 branches[i] += 1;
             }
         }
+        System.out.println("WRITING");
+        System.out.println("Function: FeedbackResponseCommentsLogic");
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if(branches[i] != 0) {
+                System.out.println(i + ": " + branches[i]);
+            }
+        }
         return email;
     }
 

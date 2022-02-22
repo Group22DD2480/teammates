@@ -48,6 +48,7 @@ public final class FeedbackQuestionsLogic {
     private FeedbackSessionsLogic fsLogic;
     private InstructorsLogic instructorsLogic;
     private StudentsLogic studentsLogic;
+    static int[] branches = new int[100];
 
     private FeedbackQuestionsLogic() {
         // prevent initialization
@@ -348,6 +349,7 @@ public final class FeedbackQuestionsLogic {
             @Nullable InstructorAttributes instructorGiver, @Nullable StudentAttributes studentGiver,
             @Nullable CourseRoster courseRoster) {
         assert instructorGiver != null || studentGiver != null;
+        boolean[] branchesVisited = new boolean[100];
 
         Map<String, String> recipients = new HashMap<>();
 
@@ -358,10 +360,12 @@ public final class FeedbackQuestionsLogic {
         String giverTeam = "";
         String giverSection = "";
         if (isStudentGiver) {
+            branchesVisited[0] = true;
             giverEmail = studentGiver.getEmail();
             giverTeam = studentGiver.getTeam();
             giverSection = studentGiver.getSection();
         } else if (isInstructorGiver) {
+            branchesVisited[1] = true;
             giverEmail = instructorGiver.getEmail();
             giverTeam = Const.USER_TEAM_FOR_INSTRUCTOR;
             giverSection = Const.DEFAULT_SECTION;
@@ -372,125 +376,177 @@ public final class FeedbackQuestionsLogic {
 
         switch (recipientType) {
         case SELF:
+            branchesVisited[2] = true;
             if (question.getGiverType() == FeedbackParticipantType.TEAMS) {
+                branchesVisited[3] = true;
                 recipients.put(giverTeam, giverTeam);
             } else {
+                branchesVisited[4] = true;
                 recipients.put(giverEmail, USER_NAME_FOR_SELF);
             }
             break;
         case STUDENTS:
         case STUDENTS_IN_SAME_SECTION:
+            branchesVisited[5] = true;
             List<StudentAttributes> studentList;
             if (courseRoster == null) {
+                branchesVisited[6] = true;
                 if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {
+                    branchesVisited[7] = true;
                     studentList = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
                 } else {
+                    branchesVisited[8] = true;
                     studentList = studentsLogic.getStudentsForCourse(question.getCourseId());
                 }
             } else {
+                branchesVisited[9] = true;
                 if (generateOptionsFor == FeedbackParticipantType.STUDENTS_IN_SAME_SECTION) {
+                    branchesVisited[10] = true;
                     final String finalGiverSection = giverSection;
                     studentList = courseRoster.getStudents().stream()
                             .filter(studentAttributes -> studentAttributes.getSection()
                                     .equals(finalGiverSection)).collect(Collectors.toList());
                 } else {
+                    branchesVisited[11] = true;
                     studentList = courseRoster.getStudents();
                 }
             }
             for (StudentAttributes student : studentList) {
+                branchesVisited[12] = true;
                 if (isInstructorGiver && !instructorGiver.isAllowedForPrivilege(
                         student.getSection(), question.getFeedbackSessionName(),
                         Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
+                    branchesVisited[13] = true;
                     // instructor can only see students in allowed sections for him/her
                     continue;
                 }
                 // Ensure student does not evaluate himself
                 if (!giverEmail.equals(student.getEmail())) {
+                    branchesVisited[14] = true;
                     recipients.put(student.getEmail(), student.getName());
                 }
             }
             break;
         case INSTRUCTORS:
+            branchesVisited[15] = true;
             List<InstructorAttributes> instructorsInCourse;
             if (courseRoster == null) {
+                branchesVisited[16] = true;
                 instructorsInCourse = instructorsLogic.getInstructorsForCourse(question.getCourseId());
             } else {
+                branchesVisited[17] = true;
                 instructorsInCourse = courseRoster.getInstructors();
             }
             for (InstructorAttributes instr : instructorsInCourse) {
+                branchesVisited[18] = true;
                 // remove hidden instructors for students
                 if (isStudentGiver && !instr.isDisplayedToStudents()) {
+                    branchesVisited[19] = true;
                     continue;
                 }
                 // Ensure instructor does not evaluate himself
                 if (!giverEmail.equals(instr.getEmail())) {
+                    branchesVisited[20] = true;
                     recipients.put(instr.getEmail(), instr.getName());
                 }
             }
             break;
         case TEAMS:
         case TEAMS_IN_SAME_SECTION:
+            branchesVisited[21] = true;
             Map<String, List<StudentAttributes>> teamToTeamMembersTable;
             List<StudentAttributes> teamStudents;
             if (generateOptionsFor == FeedbackParticipantType.TEAMS_IN_SAME_SECTION) {
+                branchesVisited[22] = true;
                 teamStudents = studentsLogic.getStudentsForSection(giverSection, question.getCourseId());
                 teamToTeamMembersTable = CourseRoster.buildTeamToMembersTable(teamStudents);
             } else {
+                branchesVisited[23] = true;
                 if (courseRoster == null) {
+                    branchesVisited[24] = true;
                     teamStudents = studentsLogic.getStudentsForCourse(question.getCourseId());
                     teamToTeamMembersTable = CourseRoster.buildTeamToMembersTable(teamStudents);
                 } else {
+                    branchesVisited[25] = true;
                     teamToTeamMembersTable = courseRoster.getTeamToMembersTable();
                 }
             }
             for (Map.Entry<String, List<StudentAttributes>> team : teamToTeamMembersTable.entrySet()) {
+                branchesVisited[26] = true;
                 if (isInstructorGiver && !instructorGiver.isAllowedForPrivilege(
                         team.getValue().iterator().next().getSection(),
                         question.getFeedbackSessionName(),
                         Const.InstructorPermissions.CAN_SUBMIT_SESSION_IN_SECTIONS)) {
                     // instructor can only see teams in allowed sections for him/her
+                    branchesVisited[27] = true;
                     continue;
                 }
                 // Ensure student('s team) does not evaluate own team.
                 if (!giverTeam.equals(team.getKey())) {
+                    branchesVisited[28] = true;
                     // recipientEmail doubles as team name in this case.
                     recipients.put(team.getKey(), team.getKey());
                 }
             }
             break;
         case OWN_TEAM:
+            branchesVisited[29] = true;
             recipients.put(giverTeam, giverTeam);
             break;
         case OWN_TEAM_MEMBERS:
+            branchesVisited[30] = true;
             List<StudentAttributes> students;
             if (courseRoster == null) {
+                branchesVisited[31] = true;
                 students = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
             } else {
+                branchesVisited[32] = true;
                 students = courseRoster.getTeamToMembersTable().getOrDefault(giverTeam, Collections.emptyList());
             }
             for (StudentAttributes student : students) {
+                branchesVisited[33] = true;
                 if (!student.getEmail().equals(giverEmail)) {
+                    branchesVisited[34] = true;
                     recipients.put(student.getEmail(), student.getName());
                 }
             }
             break;
         case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+            branchesVisited[35] = true;
             List<StudentAttributes> teamMembers;
             if (courseRoster == null) {
+                branchesVisited[36] = true;
                 teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.getCourseId());
             } else {
+                branchesVisited[37] = true;
                 teamMembers = courseRoster.getTeamToMembersTable().getOrDefault(giverTeam, Collections.emptyList());
             }
             for (StudentAttributes student : teamMembers) {
+                branchesVisited[38] = true;
                 // accepts self feedback too
                 recipients.put(student.getEmail(), student.getName());
             }
             break;
         case NONE:
+            branchesVisited[39] = true;
             recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);
             break;
         default:
+            branchesVisited[40] = true;
             break;
+        }
+        branchesVisited[41] = true;
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if (branchesVisited[i]) {
+                branches[i] += 1;
+            }
+        }
+        System.out.println("WRITING");
+        System.out.println("Function: FeedbackMcqQuestionDetailes");
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if(branches[i] != 0) {
+                System.out.println(i + ": " + branches[i]);
+            }
         }
         return recipients;
     }

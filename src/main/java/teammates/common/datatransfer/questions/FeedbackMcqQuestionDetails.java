@@ -27,6 +27,8 @@ public class FeedbackMcqQuestionDetails extends FeedbackQuestionDetails {
     private boolean hasAssignedWeights;
     private List<Double> mcqWeights;
     private double mcqOtherWeight;
+
+    static int[] branches = new int[100];
     private List<String> mcqChoices;
     private boolean otherEnabled;
     private FeedbackParticipantType generateOptionsFor;
@@ -65,9 +67,12 @@ public class FeedbackMcqQuestionDetails extends FeedbackQuestionDetails {
     @Override
     public List<String> validateQuestionDetails() {
         List<String> errors = new ArrayList<>();
-        if (generateOptionsFor == FeedbackParticipantType.NONE) {
+        boolean[] branchesVisited = new boolean[100];
 
+        if (generateOptionsFor == FeedbackParticipantType.NONE) {
+            branchesVisited[0] = true;
             if (mcqChoices.size() < MCQ_MIN_NUM_OF_CHOICES) {
+                branchesVisited[1] = true;
                 errors.add(MCQ_ERROR_NOT_ENOUGH_CHOICES
                         + MCQ_MIN_NUM_OF_CHOICES + ".");
             }
@@ -75,6 +80,7 @@ public class FeedbackMcqQuestionDetails extends FeedbackQuestionDetails {
             // If there are Empty Mcq options entered trigger this error
             boolean isEmptyMcqOptionEntered = mcqChoices.stream().anyMatch(mcqText -> mcqText.trim().equals(""));
             if (isEmptyMcqOptionEntered) {
+                branchesVisited[2] = true;
                 errors.add(MCQ_ERROR_EMPTY_MCQ_OPTION);
             }
 
@@ -83,24 +89,28 @@ public class FeedbackMcqQuestionDetails extends FeedbackQuestionDetails {
             // the mcqChoices.size() will be greater than mcqWeights.size(),
             // in that case, trigger this error.
             if (hasAssignedWeights && mcqChoices.size() != mcqWeights.size()) {
+                branchesVisited[3] = true;
                 errors.add(MCQ_ERROR_INVALID_WEIGHT);
             }
 
             // If weights are not enabled, but weight list is not empty or otherWeight is not 0
             // In that case, trigger this error.
             if (!hasAssignedWeights && (!mcqWeights.isEmpty() || mcqOtherWeight != 0)) {
+                branchesVisited[4] = true;
                 errors.add(MCQ_ERROR_INVALID_WEIGHT);
             }
 
             // If weights are enabled, but other option is disabled, and mcqOtherWeight is not 0
             // In that case, trigger this error.
             if (hasAssignedWeights && !otherEnabled && mcqOtherWeight != 0) {
+                branchesVisited[5] = true;
                 errors.add(MCQ_ERROR_INVALID_WEIGHT);
             }
 
             // If weights are enabled, and any of the weights have negative value,
             // trigger this error.
             if (hasAssignedWeights && !mcqWeights.isEmpty()) {
+                branchesVisited[6] = true;
                 mcqWeights.stream()
                         .filter(weight -> weight < 0)
                         .forEach(weight -> errors.add(MCQ_ERROR_INVALID_WEIGHT));
@@ -109,6 +119,7 @@ public class FeedbackMcqQuestionDetails extends FeedbackQuestionDetails {
             // If 'Other' option is enabled, and other weight has negative value,
             // trigger this error.
             if (hasAssignedWeights && otherEnabled && mcqOtherWeight < 0) {
+                branchesVisited[7] = true;
                 errors.add(MCQ_ERROR_INVALID_WEIGHT);
             }
 
@@ -116,7 +127,21 @@ public class FeedbackMcqQuestionDetails extends FeedbackQuestionDetails {
             boolean isDuplicateOptionsEntered = mcqChoices.stream().map(String::trim).distinct().count()
                                                 != mcqChoices.size();
             if (isDuplicateOptionsEntered) {
+                branchesVisited[8] = true;
                 errors.add(MCQ_ERROR_DUPLICATE_MCQ_OPTION);
+            }
+        }
+
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if (branchesVisited[i]) {
+                branches[i] += 1;
+            }
+        }
+        System.out.println("WRITING");
+        System.out.println("Function: FeedbackMcqQuestionDetailes");
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if(branches[i] != 0) {
+                System.out.println(i + ": " + branches[i]);
             }
         }
 

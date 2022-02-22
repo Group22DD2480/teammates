@@ -32,6 +32,7 @@ public class FeedbackQuestionAttributes extends EntityAttributes<FeedbackQuestio
     private transient Instant createdAt;
     private transient Instant updatedAt;
     private transient String feedbackQuestionId;
+    static int[] branches = new int[100];
 
     private FeedbackQuestionAttributes() {
         this.showResponsesTo = new ArrayList<>();
@@ -234,90 +235,132 @@ public class FeedbackQuestionAttributes extends EntityAttributes<FeedbackQuestio
 
     @Override
     public boolean equals(Object obj) {
+        boolean[] branchesVisited = new boolean[100];
         if (this == obj) {
+            branchesVisited[0] = true;
             return true;
         }
 
         if (obj == null) {
+            branchesVisited[1] = true;
             return false;
         }
 
         if (getClass() != obj.getClass()) {
+            branchesVisited[2] = true;
             return false;
         }
 
         FeedbackQuestionAttributes other = (FeedbackQuestionAttributes) obj;
 
         if (courseId == null) {
+            branchesVisited[3] = true;
             if (other.courseId != null) {
+                branchesVisited[4] = true;
                 return false;
             }
         } else if (!courseId.equals(other.courseId)) {
+            branchesVisited[5] = true;
             return false;
         }
 
         if (feedbackSessionName == null) {
+            branchesVisited[6] = true;
             if (other.feedbackSessionName != null) {
+                branchesVisited[7] = true;
                 return false;
             }
         } else if (!feedbackSessionName.equals(other.feedbackSessionName)) {
+            branchesVisited[8] = true;
             return false;
         }
 
         if (giverType != other.giverType) {
+            branchesVisited[9] = true;
             return false;
         }
 
         if (numberOfEntitiesToGiveFeedbackTo != other.numberOfEntitiesToGiveFeedbackTo) {
+            branchesVisited[10] = true;
             return false;
         }
 
         if (questionNumber != other.questionNumber) {
+            branchesVisited[11] = true;
             return false;
         }
 
         if (questionDetails == null) {
+            branchesVisited[12] = true;
             if (other.questionDetails != null) {
+                branchesVisited[13] = true;
                 return false;
             }
         } else if (!questionDetails.equals(other.questionDetails)) {
+            branchesVisited[14] = true;
             return false;
         }
 
         if (questionDescription == null) {
+            branchesVisited[15] = true;
             if (other.questionDescription != null) {
+                branchesVisited[16] = true;
                 return false;
             }
         } else if (!questionDescription.equals(other.questionDescription)) {
+            branchesVisited[17] = true;
             return false;
         }
 
         if (recipientType != other.recipientType) {
+            branchesVisited[18] = true;
             return false;
         }
 
         if (showGiverNameTo == null) {
+            branchesVisited[19] = true;
             if (other.showGiverNameTo != null) {
+                branchesVisited[20] = true;
                 return false;
             }
         } else if (!showGiverNameTo.equals(other.showGiverNameTo)) {
+            branchesVisited[21] = true;
             return false;
         }
 
         if (showRecipientNameTo == null) {
+            branchesVisited[22] = true;
             if (other.showRecipientNameTo != null) {
+                branchesVisited[23] = true;
                 return false;
             }
         } else if (!showRecipientNameTo.equals(other.showRecipientNameTo)) {
+            branchesVisited[24] = true;
             return false;
         }
 
         if (showResponsesTo == null) {
+            branchesVisited[25] = true;
             if (other.showResponsesTo != null) {
+                branchesVisited[26] = true;
                 return false;
             }
         } else if (!showResponsesTo.equals(other.showResponsesTo)) {
+            branchesVisited[27] = true;
             return false;
+        }
+        branchesVisited[28] = true;
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if (branchesVisited[i]) {
+                branches[i] += 1;
+            }
+        }
+        System.out.println("WRITING");
+        System.out.println("Function: FeedbackMcqQuestionDetailes");
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if(branches[i] != 0) {
+                System.out.println(i + ": " + branches[i]);
+            }
         }
 
         return true;

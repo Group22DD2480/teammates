@@ -37,6 +37,7 @@ public final class FeedbackResponseCommentsLogic {
     private FeedbackSessionsLogic fsLogic;
     private InstructorsLogic instructorsLogic;
     private StudentsLogic studentsLogic;
+    static int[] branches = new int[100];
 
     private FeedbackResponseCommentsLogic() {
         // prevent initialization
@@ -221,52 +222,82 @@ public final class FeedbackResponseCommentsLogic {
 
     private boolean isFeedbackParticipantNameVisibleToUser(FeedbackResponseAttributes response,
             String userEmail, CourseRoster roster, List<FeedbackParticipantType> showNameTo) {
+        boolean[] branchesVisited = new boolean[100];
         String responseGiverTeam = "giverTeam";
         if (roster.getStudentForEmail(response.getGiver()) != null) {
+            branchesVisited[0] = true;
             responseGiverTeam = roster.getStudentForEmail(response.getGiver()).getTeam();
         }
         String responseRecipientTeam = "recipientTeam";
         if (roster.getStudentForEmail(response.getRecipient()) != null) {
+            branchesVisited[1] = true;
             responseRecipientTeam = roster.getStudentForEmail(response.getRecipient()).getTeam();
         }
         String currentUserTeam = "currentUserTeam";
         if (roster.getStudentForEmail(userEmail) != null) {
+            branchesVisited[2] = true;
             currentUserTeam = roster.getStudentForEmail(userEmail).getTeam();
         }
         for (FeedbackParticipantType type : showNameTo) {
+            branchesVisited[3] = true;
             switch (type) {
             case INSTRUCTORS:
+                branchesVisited[4] = true;
                 if (roster.getInstructorForEmail(userEmail) != null) {
+                    branchesVisited[5] = true;
                     return true;
                 }
                 break;
             case OWN_TEAM_MEMBERS:
+                branchesVisited[6] = true;
                 if (responseGiverTeam.equals(currentUserTeam)) {
+                    branchesVisited[7] = true;
                     return true;
                 }
                 break;
             case RECEIVER:
+                branchesVisited[8] = true;
                 if (userEmail.equals(response.getRecipient())) {
+                    branchesVisited[9] = true;
                     return true;
                 }
                 break;
             case RECEIVER_TEAM_MEMBERS:
+                branchesVisited[10] = true;
                 if (responseRecipientTeam.equals(currentUserTeam)) {
+                    branchesVisited[11] = true;
                     return true;
                 }
                 break;
             case STUDENTS:
+                branchesVisited[11] = true;
                 if (roster.getStudentForEmail(userEmail) != null) {
+                    branchesVisited[12] = true;
                     return true;
                 }
                 break;
             case GIVER:
+                branchesVisited[13] = true;
                 if (userEmail.equals(response.getGiver())) {
+                    branchesVisited[14] = true;
                     return true;
                 }
                 break;
             default:
+                branchesVisited[15] = true;
                 break;
+            }
+        }
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if (branchesVisited[i]) {
+                branches[i] += 1;
+            }
+        }
+        System.out.println("WRITING");
+        System.out.println("Function: FeedbackResponseCommentsLogic");
+        for (int i = 0; i < branchesVisited.length; i++) {
+            if(branches[i] != 0) {
+                System.out.println(i + ": " + branches[i]);
             }
         }
         return false;
