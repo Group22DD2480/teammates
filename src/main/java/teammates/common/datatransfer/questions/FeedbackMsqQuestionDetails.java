@@ -50,6 +50,7 @@ public class FeedbackMsqQuestionDetails extends FeedbackQuestionDetails {
     private FeedbackParticipantType generateOptionsFor;
     private int maxSelectableChoices;
     private int minSelectableChoices;
+    private List<String> errors;
 
     public FeedbackMsqQuestionDetails() {
         this(null);
@@ -110,9 +111,28 @@ public class FeedbackMsqQuestionDetails extends FeedbackQuestionDetails {
         return this.otherEnabled != newMsqDetails.otherEnabled;
     }
 
+    private void validateEmptyMsqOptionEntered() {
+        boolean isEmptyMsqOptionEntered = msqChoices.stream().anyMatch(msqText -> msqText.trim().equals(""));
+        if (isEmptyMsqOptionEntered) {
+            errors.add(MSQ_ERROR_EMPTY_MSQ_OPTION);
+        }
+    }
+
+    private void validateWeightsandSameNumber() {
+        if (hasAssignedWeights && msqChoices.size() != msqWeights.size()) {
+            errors.add(MSQ_ERROR_INVALID_WEIGHT);
+        }
+    }
+
+    private void validateWeightsParams() {
+        if (!hasAssignedWeights && (!msqWeights.isEmpty() || msqOtherWeight != 0)) {
+            errors.add(MSQ_ERROR_INVALID_WEIGHT);
+        }
+    }
+
     @Override
     public List<String> validateQuestionDetails() {
-        List<String> errors = new ArrayList<>();
+        errors = new ArrayList<>();
         if (generateOptionsFor == FeedbackParticipantType.NONE) {
 
             if (msqChoices.size() < MSQ_MIN_NUM_OF_CHOICES) {
@@ -121,24 +141,17 @@ public class FeedbackMsqQuestionDetails extends FeedbackQuestionDetails {
             }
 
             // If there are Empty Msq options entered trigger this error
-            boolean isEmptyMsqOptionEntered = msqChoices.stream().anyMatch(msqText -> msqText.trim().equals(""));
-            if (isEmptyMsqOptionEntered) {
-                errors.add(MSQ_ERROR_EMPTY_MSQ_OPTION);
-            }
+            validateEmptyMsqOptionEntered();
 
             // If weights are enabled, number of choices and weights should be same.
             // If a user enters an invalid weight for a valid choice,
             // the msqChoices.size() will be greater than msqWeights.size(), in that case
             // trigger this error.
-            if (hasAssignedWeights && msqChoices.size() != msqWeights.size()) {
-                errors.add(MSQ_ERROR_INVALID_WEIGHT);
-            }
+            validateWeightsandSameNumber();
 
             // If weights are not enabled, but weight list is not empty or otherWeight is not 0
             // In that case, trigger this error.
-            if (!hasAssignedWeights && (!msqWeights.isEmpty() || msqOtherWeight != 0)) {
-                errors.add(MSQ_ERROR_INVALID_WEIGHT);
-            }
+            validateWeightsParams();
 
             // If weight is enabled, but other option is disabled, and msqOtherWeight is not 0
             // In that case, trigger this error.
