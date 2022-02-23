@@ -57,6 +57,7 @@ public class StudentsLogicTest extends BaseLogicTest {
         testIsStudentsInSameTeam();
         testValidateSections();
         testUpdateStudentCascade();
+        testGetSectionForTeam();
     }
 
     private void testValidateSections() throws Exception {
@@ -135,6 +136,12 @@ public class StudentsLogicTest extends BaseLogicTest {
                 + StudentsLogic.ERROR_INVALID_TEAM_NAME_INSTRUCTION;
 
         assertEquals(expectedInvalidTeamError, ee.getMessage());
+    }
+
+    @Test
+    public void testGetSectionForTeam() {
+        var tmp = studentsLogic.getSectionForTeam("courseid", "teamname");
+        assertEquals(Const.DEFAULT_SECTION, tmp);
     }
 
     @Test
