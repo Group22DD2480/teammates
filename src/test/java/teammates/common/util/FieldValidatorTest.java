@@ -1,10 +1,15 @@
 package teammates.common.util;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.testng.annotations.Test;
 
 import teammates.test.BaseTestCase;
+
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
 
 /**
  * SUT: {@link FieldValidator}.
@@ -18,6 +23,15 @@ public class FieldValidatorTest extends BaseTestCase {
         String actual = FieldValidator.getValidityInfoForNonHtmlField(testFieldName, clean);
         assertEquals("Valid clean input with no special HTML characters should return empty string", "",
                      actual);
+    }
+
+    @Test
+    public void testAreElementsUnique() {
+        List<Integer> tmp_list = new ArrayList<Integer>();
+        tmp_list.add(1);
+        assertTrue(FieldValidator.areElementsUnique(tmp_list));
+        tmp_list.add(1);
+        assertFalse(FieldValidator.areElementsUnique(tmp_list));
     }
 
     @Test
