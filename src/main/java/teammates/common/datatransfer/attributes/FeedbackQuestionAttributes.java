@@ -232,6 +232,17 @@ public class FeedbackQuestionAttributes extends EntityAttributes<FeedbackQuestio
         return result;
     }
 
+    private boolean refactorOne(Object obj1, Object obj2) {
+        if (obj1 == null) {
+            if (obj2 != null) {
+                return false;
+            }
+        } else if (!obj1.equals(obj2)) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -248,22 +259,6 @@ public class FeedbackQuestionAttributes extends EntityAttributes<FeedbackQuestio
 
         FeedbackQuestionAttributes other = (FeedbackQuestionAttributes) obj;
 
-        if (courseId == null) {
-            if (other.courseId != null) {
-                return false;
-            }
-        } else if (!courseId.equals(other.courseId)) {
-            return false;
-        }
-
-        if (feedbackSessionName == null) {
-            if (other.feedbackSessionName != null) {
-                return false;
-            }
-        } else if (!feedbackSessionName.equals(other.feedbackSessionName)) {
-            return false;
-        }
-
         if (giverType != other.giverType) {
             return false;
         }
@@ -276,51 +271,17 @@ public class FeedbackQuestionAttributes extends EntityAttributes<FeedbackQuestio
             return false;
         }
 
-        if (questionDetails == null) {
-            if (other.questionDetails != null) {
-                return false;
-            }
-        } else if (!questionDetails.equals(other.questionDetails)) {
-            return false;
-        }
-
-        if (questionDescription == null) {
-            if (other.questionDescription != null) {
-                return false;
-            }
-        } else if (!questionDescription.equals(other.questionDescription)) {
-            return false;
-        }
-
         if (recipientType != other.recipientType) {
             return false;
         }
 
-        if (showGiverNameTo == null) {
-            if (other.showGiverNameTo != null) {
-                return false;
-            }
-        } else if (!showGiverNameTo.equals(other.showGiverNameTo)) {
-            return false;
-        }
-
-        if (showRecipientNameTo == null) {
-            if (other.showRecipientNameTo != null) {
-                return false;
-            }
-        } else if (!showRecipientNameTo.equals(other.showRecipientNameTo)) {
-            return false;
-        }
-
-        if (showResponsesTo == null) {
-            if (other.showResponsesTo != null) {
-                return false;
-            }
-        } else if (!showResponsesTo.equals(other.showResponsesTo)) {
-            return false;
-        }
-
-        return true;
+        return refactorOne(feedbackSessionName, other.feedbackSessionName)
+                && refactorOne(courseId, other.courseId)
+                && refactorOne(questionDetails, other.questionDetails)
+                && refactorOne(questionDescription, other.questionDescription)
+                && refactorOne(showRecipientNameTo, other.showRecipientNameTo)
+                && refactorOne(showResponsesTo, other.showResponsesTo)
+                && refactorOne(showGiverNameTo, other.showGiverNameTo);
     }
 
     /**

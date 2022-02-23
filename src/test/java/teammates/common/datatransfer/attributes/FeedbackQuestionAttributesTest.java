@@ -858,6 +858,7 @@ public class FeedbackQuestionAttributesTest extends BaseAttributesTest {
         feedbackQuestionCopy2.setQuestionNumber(7);
         assertFalse(feedbackQuestion.equals(feedbackQuestionCopy2));
     }
+
     @Test
     public void testEqualsWithNullValues() {
         FeedbackQuestionAttributes feedbackQuestion = getNewFeedbackQuestionAttributes();
@@ -865,12 +866,10 @@ public class FeedbackQuestionAttributesTest extends BaseAttributesTest {
         FeedbackQuestionAttributes feedbackQuestionCopy1 = getNewFeedbackQuestionAttributes();
         FeedbackQuestionAttributes feedbackQuestionCopy2 = getNewFeedbackQuestionAttributes();
         FeedbackQuestionAttributes feedbackQuestionCopy3 = getNewFeedbackQuestionAttributes();
-        // When object is null it should be false
-        assertFalse(feedbackQuestion.equals(null));
 
         // When session name is null
-         feedbackQuestionCopy.setFeedbackSessionName(null);
-         assertFalse(feedbackQuestion.equals(feedbackQuestionCopy));
+        feedbackQuestionCopy.setFeedbackSessionName(null);
+        assertFalse(feedbackQuestion.equals(feedbackQuestionCopy));
 
         // When the course id is null
         feedbackQuestionCopy1.setCourseId(null);
