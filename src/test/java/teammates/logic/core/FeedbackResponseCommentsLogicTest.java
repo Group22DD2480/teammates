@@ -121,6 +121,16 @@ public class FeedbackResponseCommentsLogicTest extends BaseLogicTest {
     }
 
     @Test
+    public void testCreateFeedbackResponseComment_TEAMS_exceptionShouldBeThrown() {
+        FeedbackResponseCommentAttributes frComment = restoreFrCommentFromDataBundle("comment1FromT1C1ToR1Q1S1C1");
+        frComment.setCommentGiverType(INSTRUCTORS);
+        frComment.setCommentFromFeedbackParticipant(true);
+        frComment.setCommentGiver("ejoieajogjij");
+        EntityDoesNotExistException ednee = assertThrows(EntityDoesNotExistException.class,
+                () -> frcLogic.createFeedbackResponseComment(frComment));
+    }
+
+    @Test
     public void testCreateFeedbackResponseComment_invalidVisibilitySettings_exceptionShouldBeThrown() {
         FeedbackResponseCommentAttributes frComment = restoreFrCommentFromDataBundle("comment1FromT1C1ToR1Q1S1C1");
         frComment.setCommentFromFeedbackParticipant(true);
