@@ -157,6 +157,13 @@
       "institute": "TEAMMATES Test Institute 1",
       "timeZone": "Africa/Johannesburg"
     },
+	"typicalCourse6": {
+      "createdAt": "2012-04-02T23:58:00Z",
+      "id": "idOfTypicalCourse6",
+      "name": "Typical Course 6 with 1 Evals",
+      "institute": "TEAMMATES Test Institute 1",
+      "timeZone": "Africa/Johannesburg"
+    },
     "courseNoEvals": {
       "id": "idOfCourseNoEvals",
       "name": "Typical Course 3 with 0 Evals",
@@ -724,6 +731,33 @@
       "comments": "comment for student1InCourse3</td></div>'\"",
       "team": "Team 1.1</td></div>'\"",
       "section": "Section 1"
+    },
+	"student1InCourse6": {
+      "googleId": "student1InCourse1",
+      "email": "student1InCourse6@gmail.tmt",
+      "course": "idOfTypicalCourse6",
+      "name": "student1 In Course6</td></div>'\"",
+      "comments": "comment for student1InCourse1</td></div>'\"",
+      "team": "Team 1.1</td></div>'\"",
+      "section": "Section 3"
+    },
+	"student2InCourse6": {
+      "googleId": "student1InCourse1",
+      "email": "student2InCourse6@gmail.tmt",
+      "course": "idOfTypicalCourse6",
+      "name": "student2 In Course6</td></div>'\"",
+      "comments": "comment for student1InCourse1</td></div>'\"",
+      "team": "Team 1.1</td></div>'\"",
+      "section": "Section 3"
+    },
+	"student3InCourse6": {
+      "googleId": "student1InCourse1",
+      "email": "student3InCourse6@gmail.tmt",
+      "course": "idOfTypicalCourse6",
+      "name": "student1 In Course6</td></div>'\"",
+      "comments": "comment for student1InCourse1</td></div>'\"",
+      "team": "Team 1.1</td></div>'\"",
+      "section": "Section 3"
     },
     "student1InUnregisteredCourse": {
       "googleId": "",
@@ -1408,6 +1442,28 @@
       "showResponsesTo": [],
       "showGiverNameTo": [],
       "showRecipientNameTo": []
+    },
+	"qn1InSession1InCourse6": {
+      "feedbackSessionName": "First feedback session",
+      "courseId": "idOfTypicalCourse6",
+      "questionDetails": {
+        "recommendedLength": 100,
+        "questionText": "New format Text question",
+        "questionType": "TEXT"
+      },
+      "questionNumber": 1,
+      "giverType": "SELF",
+      "recipientType": "STUDENTS_IN_SAME_SECTION",
+      "numberOfEntitiesToGiveFeedbackTo": -100,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
     },
     "qn1InSession1InTestingSanitizationCourse": {
       "feedbackSessionName": "Normal feedback session name",

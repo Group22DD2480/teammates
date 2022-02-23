@@ -160,10 +160,21 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
         InstructorAttributes instructorGiver;
         CourseRoster courseRoster;
         Map<String, String> recipients;
-
-        ______TS("response to students, total 5");
-
-        question = getQuestionFromDatabase("qn2InSession1InCourse1");
+		
+		______TS("response to students in same section, total 3");
+		
+        question = getQuestionFromDatabase("qn1InSession1InCourse6");
+        studentGiver = dataBundle.students.get("student1InCourse6");
+        courseRoster = new CourseRoster(
+                studentsLogic.getStudentsForCourse(studentGiver.getCourse()),
+                instructorsLogic.getInstructorsForCourse(studentGiver.getCourse()));
+				
+		recipients = fqLogic.getRecipientsOfQuestion(question, null, studentGiver, null);
+		assertEquals(recipients.size(), 2); // 3 students minus giver himself
+		
+		______TS("response to students, total 5");
+		
+		question = getQuestionFromDatabase("qn2InSession1InCourse1");
         studentGiver = dataBundle.students.get("student1InCourse1");
         courseRoster = new CourseRoster(
                 studentsLogic.getStudentsForCourse(studentGiver.getCourse()),
