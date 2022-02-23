@@ -76,6 +76,15 @@ public class CoursesLogicTest extends BaseLogicTest {
         testMoveCourseToRecycleBin();
         testRestoreCourseFromRecycleBin();
         testUpdateCourseCascade();
+        testGetTeamsForSection();
+    }
+
+    private  void testGetTeamsForSection() throws Exception {
+        try {
+            coursesLogic.getTeamsForSection("test", "shouldnotexistright");
+        } catch (Exception e) {
+
+        }
     }
 
     private void testGetCourse() throws Exception {
