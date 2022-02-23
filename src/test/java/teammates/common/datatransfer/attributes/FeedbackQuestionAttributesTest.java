@@ -820,6 +820,73 @@ public class FeedbackQuestionAttributesTest extends BaseAttributesTest {
     }
 
     @Test
+    public void testEqualsWithVaryingTypeOfClass() {
+        FeedbackQuestionAttributes feedbackQuestion = getNewFeedbackQuestionAttributes();
+        String stringObj = "test";
+        Integer intObj = 6;
+        Boolean boolObj = true;
+        // When the object class differ from FeedbackQuestionAttributes it should be false
+        assertFalse(feedbackQuestion.equals(stringObj));
+        assertFalse(feedbackQuestion.equals(intObj));
+        assertFalse(feedbackQuestion.equals(boolObj));
+        // When the object is the same object it should be true
+        assertTrue(feedbackQuestion.equals(feedbackQuestion));
+    }
+
+    @Test
+    public void testEqualsDiffering() {
+        FeedbackQuestionAttributes feedbackQuestion = getNewFeedbackQuestionAttributes();
+        FeedbackQuestionAttributes feedbackQuestionCopy = getNewFeedbackQuestionAttributes();
+        FeedbackQuestionAttributes feedbackQuestionCopy1 = getNewFeedbackQuestionAttributes();
+        FeedbackQuestionAttributes feedbackQuestionCopy2 = getNewFeedbackQuestionAttributes();
+
+        // When the session name is different
+        FeedbackQuestionAttributes feedbackQuestionDifferent = FeedbackQuestionAttributes.builder()
+                .withFeedbackSessionName("testFeedbackSession")
+                .build();
+        assertFalse(feedbackQuestion.equals(feedbackQuestionDifferent));
+
+        // When the question description is different
+        feedbackQuestionCopy.setQuestionDescription("Another description.");
+        assertFalse(feedbackQuestion.equals(feedbackQuestionCopy));
+
+        //When the number of entities to give feedback to is different
+        feedbackQuestionCopy1.setNumberOfEntitiesToGiveFeedbackTo(2542);
+        assertFalse(feedbackQuestion.equals(feedbackQuestionCopy1));
+
+        //When the question number is different
+        feedbackQuestionCopy2.setQuestionNumber(7);
+        assertFalse(feedbackQuestion.equals(feedbackQuestionCopy2));
+    }
+    @Test
+    public void testEqualsWithNullValues() {
+        FeedbackQuestionAttributes feedbackQuestion = getNewFeedbackQuestionAttributes();
+        FeedbackQuestionAttributes feedbackQuestionCopy = getNewFeedbackQuestionAttributes();
+        FeedbackQuestionAttributes feedbackQuestionCopy1 = getNewFeedbackQuestionAttributes();
+        FeedbackQuestionAttributes feedbackQuestionCopy2 = getNewFeedbackQuestionAttributes();
+        FeedbackQuestionAttributes feedbackQuestionCopy3 = getNewFeedbackQuestionAttributes();
+        // When object is null it should be false
+        assertFalse(feedbackQuestion.equals(null));
+
+        // When session name is null
+         feedbackQuestionCopy.setFeedbackSessionName(null);
+         assertFalse(feedbackQuestion.equals(feedbackQuestionCopy));
+
+        // When the course id is null
+        feedbackQuestionCopy1.setCourseId(null);
+        assertFalse(feedbackQuestionCopy1.equals(feedbackQuestion));
+
+        // When recipient type is null
+        feedbackQuestionCopy2.setRecipientType(null);
+        assertFalse(feedbackQuestionCopy2.equals(feedbackQuestion));
+
+        // When giver type is null
+        feedbackQuestionCopy3.setGiverType(null);
+        assertFalse(feedbackQuestionCopy3.equals(feedbackQuestion));
+
+    }
+
+    @Test
     public void testHashCode() {
         FeedbackQuestionAttributes feedbackQuestion = getNewFeedbackQuestionAttributes();
 
