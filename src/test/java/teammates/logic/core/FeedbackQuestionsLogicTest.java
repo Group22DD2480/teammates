@@ -88,6 +88,14 @@ public class FeedbackQuestionsLogicTest extends BaseLogicTest {
         FeedbackQuestionAttributes question;
         String email;
         Map<String, String> recipients;
+		
+		______TS("response to students in same section, total 3");
+		
+        question = getQuestionFromDatabase("qn1InSession1InCourse6");
+        email = dataBundle.students.get("student1InCourse6").getEmail();
+		
+        recipients = fqLogic.getRecipientsForQuestion(question, email);	
+		assertEquals(recipients.size(), 2); // 3 students minus giver himself
 
         ______TS("response to students, total 5");
 
