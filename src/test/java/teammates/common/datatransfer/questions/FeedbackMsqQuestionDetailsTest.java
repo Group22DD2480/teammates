@@ -128,6 +128,45 @@ public class FeedbackMsqQuestionDetailsTest extends BaseTestCase {
         AssertHelper.assertContains(FeedbackMsqQuestionDetails.MSQ_ERROR_MAX_SELECTABLE_EXCEEDED_TOTAL, errors.get(0));
     }
 
+    @Test //DAVID TEST 1
+    public void testValidateQuestionDetails_maxSelectableChoicesLessthantwo_shouldReturnError() {
+        FeedbackMsqQuestionDetails msqDetails = new FeedbackMsqQuestionDetails();
+
+        msqDetails.setMsqChoices(Arrays.asList("a", "b"));
+        // 'other' is one of the choices
+        msqDetails.setOtherEnabled(true);
+        msqDetails.setGenerateOptionsFor(FeedbackParticipantType.NONE);
+        msqDetails.setHasAssignedWeights(false);
+        msqDetails.setMsqOtherWeight(0);
+        msqDetails.setMsqWeights(new ArrayList<>());
+        msqDetails.setMaxSelectableChoices(1);
+        msqDetails.setMinSelectableChoices(Const.POINTS_NO_VALUE);
+
+        List<String> errors = msqDetails.validateQuestionDetails();
+        assertEquals(1, errors.size());
+        assertEquals(FeedbackMsqQuestionDetails.MSQ_ERROR_MIN_FOR_MAX_SELECTABLE_CHOICES, errors.get(0));
+    }
+
+    @Test //DAVID TEST 2
+    public void testValidateQuestionDetails_msqchoicevalidatable_maxSelectableChoiceslessthantwo_shouldReturnError() {
+        FeedbackMsqQuestionDetails msqDetails = new FeedbackMsqQuestionDetails();
+
+        msqDetails.setMsqChoices(Arrays.asList("a", "b"));
+        // 'other' is one of the choices
+        msqDetails.setOtherEnabled(true);
+        msqDetails.setGenerateOptionsFor(FeedbackParticipantType.NONE);
+        msqDetails.setHasAssignedWeights(false);
+        msqDetails.setMsqOtherWeight(0);
+        msqDetails.setMsqWeights(new ArrayList<>());
+        msqDetails.setMaxSelectableChoices(Const.POINTS_NO_VALUE); //minselectablechoices set to disabled
+        msqDetails.setMinSelectableChoices(0); //minselectablechoices set to enabled
+
+        List<String> errors = msqDetails.validateQuestionDetails();
+        assertEquals(1, errors.size());
+        assertEquals(FeedbackMsqQuestionDetails.MSQ_ERROR_MIN_FOR_MIN_SELECTABLE_CHOICES, errors.get(0));
+    }
+
+
     @Test
     public void testValidateQuestionDetails_maxSelectableChoicesEqualTotalNumberOfChoice_shouldNotReturnError() {
         FeedbackMsqQuestionDetails msqDetails = new FeedbackMsqQuestionDetails();
