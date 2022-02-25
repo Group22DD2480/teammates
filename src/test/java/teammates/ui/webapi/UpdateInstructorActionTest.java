@@ -67,9 +67,9 @@ public class UpdateInstructorActionTest extends BaseActionTest<UpdateInstructorA
 
 
         ______TS("Failure case: edit failed due to invalid id");
-        Sring invalidID = null;
-        reqBody = new InstructorCreateRequest(instructorToEdit.getCourseId, instructorToEdit.getName(),
-        instructorToEdit.getEmail, Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER,
+        String invalidID = null;
+        reqBody = new InstructorCreateRequest(instructorToEdit.getCourseId(), instructorToEdit.getName(),
+        instructorToEdit.getEmail(), Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER,
         instructorDisplayName, true);
         
 
