@@ -65,6 +65,16 @@ public class UpdateInstructorActionTest extends BaseActionTest<UpdateInstructorA
 
         verifySpecifiedTasksAdded(Const.TaskQueue.SEARCH_INDEXING_QUEUE_NAME, 1);
 
+
+        ______TS("Failure case: edit failed due to invalid id");
+        Sring invalidID = null;
+        reqBody = new InstructorCreateRequest(instructorToEdit.getCourseId, instructorToEdit.getName(),
+        instructorToEdit.getEmail, Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER,
+        instructorDisplayName, true);
+        
+
+
+
         ______TS("Failure case: edit failed due to invalid parameters");
 
         String invalidEmail = "wrongEmail.com";
@@ -89,9 +99,22 @@ public class UpdateInstructorActionTest extends BaseActionTest<UpdateInstructorA
 
         verifyNoTasksAdded();
 
+       
+        __TS("Failure case: entity check");
+
+        reqBody = new InstructorCreateRequest(instructorId, instructorToEdit.getName(),
+                newInstructorEmail, Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER,
+                null, false);
+
+                EntityNotFoundException ednee = verifyEntityNotFound(reqBody, submissionParams);
+                assertEquals("At least one instructor must be displayed to students", ednee.getMessage());
+
+
         ______TS("Masquerade mode: edit instructor successfully");
 
         loginAsAdmin();
+
+
 
         newInstructorName = "newName2";
         newInstructorEmail = "newEmail2@email.com";
